@@ -4,5 +4,6 @@
     <string name="app_name">Sakus</string>
     <string name="action_about">About</string>
     <string name="about_info">developed by Eray Arslan</string>
+    <string name="title_activity_bus_list">Buses</string>
 
 </resources>

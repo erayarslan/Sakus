@@ -3,5 +3,6 @@
     <string name="action_about">Hakkında</string>
     <string name="app_name">Sakus</string>
     <string name="about_info">Eray Arslan tarafından geliştirildi</string>
+    <string name="title_activity_bus_list">Otobüsler</string>
 
 </resources>

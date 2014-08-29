@@ -1,5 +1,6 @@
 package com.guguluk.sakus.activity;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -46,14 +47,16 @@ public class LineListActivity extends ActionBarActivity {
             @Override
             public void success(Object arg0, Response arg1) {
                 final City city = (City) arg0;
-                List<Line> lineList = city.getLineList();
+                final List<Line> lineList = city.getLineList();
                 Collections.sort(lineList, new LineListComparator());
-                LineListAdapter lineListAdapter = new LineListAdapter(LineListActivity.this, city.getLineList());
+                LineListAdapter lineListAdapter = new LineListAdapter(LineListActivity.this, lineList);
                 lineListView.setAdapter(lineListAdapter);
                 lineListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                        Utils.showMessage("Line", city.getLineList().get(arg2).getName(), LineListActivity.this);
+                        Intent intent = new Intent(LineListActivity.this, BusListActivity.class);
+                        intent.putExtra("lineName", lineList.get(arg2).getName());
+                        startActivity(intent);
                     }
                 });
             }
