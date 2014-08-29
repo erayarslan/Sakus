@@ -1,5 +1,6 @@
 package com.guguluk.sakus.activity;
 
+import android.app.ProgressDialog;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -30,6 +31,7 @@ public class BusListActivity extends ActionBarActivity {
 
     private LineResource lineResource = new LineResource();
     private ListView busListView;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,17 +39,22 @@ public class BusListActivity extends ActionBarActivity {
         setContentView(R.layout.activity_bus_list);
 
         busListView = (ListView) findViewById(R.id.busLines);
+        progressDialog = Utils.getProgress(this);
 
         String lineName = getIntent().getExtras().getString("lineName");
 
         lineResource.getLine(lineName,new Callback() {
             @Override
             public void failure(RetrofitError arg0) {
+                progressDialog.dismiss();
+                //
                 Utils.showMessage("Error", arg0.getMessage(), BusListActivity.this);
             }
 
             @Override
             public void success(Object arg0, Response arg1) {
+                progressDialog.dismiss();
+                //
                 final Line line = (Line) arg0;
                 final List<Bus> busList = line.getBusList();
                 BusListAdapter busListAdapter = new BusListAdapter(BusListActivity.this, busList);

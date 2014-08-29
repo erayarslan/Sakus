@@ -1,5 +1,6 @@
 package com.guguluk.sakus.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import com.guguluk.sakus.resource.CityResource;
 import com.guguluk.sakus.util.LineListAdapter;
 import com.guguluk.sakus.util.LineListComparator;
 import com.guguluk.sakus.util.Utils;
+import com.squareup.okhttp.internal.Util;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -30,6 +32,7 @@ public class LineListActivity extends ActionBarActivity {
 
     private CityResource cityResource = new CityResource();
     private ListView lineListView;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,15 +40,20 @@ public class LineListActivity extends ActionBarActivity {
         setContentView(R.layout.activity_line_list);
 
         lineListView = (ListView) findViewById(R.id.listLines);
+        progressDialog = Utils.getProgress(this);
 
         cityResource.getCity(new Callback() {
             @Override
             public void failure(RetrofitError arg0) {
+                progressDialog.dismiss();
+                //
                 Utils.showMessage("Error", arg0.getMessage(), LineListActivity.this);
             }
 
             @Override
             public void success(Object arg0, Response arg1) {
+                progressDialog.dismiss();
+                //
                 final City city = (City) arg0;
                 final List<Line> lineList = city.getLineList();
                 Collections.sort(lineList, new LineListComparator());

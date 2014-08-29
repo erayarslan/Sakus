@@ -5,5 +5,7 @@
     <string name="action_about">About</string>
     <string name="about_info">developed by Eray Arslan</string>
     <string name="title_activity_bus_list">Buses</string>
+    <string name="loading_text_title"></string>
+    <string name="loading_text_content">Loading...</string>
 
 </resources>
