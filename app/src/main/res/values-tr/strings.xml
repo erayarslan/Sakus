@@ -1,0 +1,7 @@
+<resources>
+
+    <string name="action_about">Hakkında</string>
+    <string name="app_name">Sakus</string>
+    <string name="about_info">Eray Arslan tarafından geliştirildi</string>
+
+</resources>
