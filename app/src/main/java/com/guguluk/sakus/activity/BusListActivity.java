@@ -1,6 +1,7 @@
 package com.guguluk.sakus.activity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,16 +12,11 @@ import android.widget.ListView;
 
 import com.guguluk.sakus.R;
 import com.guguluk.sakus.dto.Bus;
-import com.guguluk.sakus.dto.City;
 import com.guguluk.sakus.dto.Line;
-import com.guguluk.sakus.resource.CityResource;
 import com.guguluk.sakus.resource.LineResource;
 import com.guguluk.sakus.util.BusListAdapter;
-import com.guguluk.sakus.util.LineListAdapter;
-import com.guguluk.sakus.util.LineListComparator;
 import com.guguluk.sakus.util.Utils;
 
-import java.util.Collections;
 import java.util.List;
 
 import retrofit.Callback;
@@ -33,6 +29,8 @@ public class BusListActivity extends ActionBarActivity {
     private ListView busListView;
     private ProgressDialog progressDialog;
 
+    private String lineName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +39,7 @@ public class BusListActivity extends ActionBarActivity {
         busListView = (ListView) findViewById(R.id.busLines);
         progressDialog = Utils.getProgress(this);
 
-        String lineName = getIntent().getExtras().getString("lineName");
+        lineName = getIntent().getExtras().getString("lineName");
 
         lineResource.getLine(lineName,new Callback() {
             @Override
@@ -62,7 +60,10 @@ public class BusListActivity extends ActionBarActivity {
                 busListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                        Utils.showMessage("Bus", busList.get(arg2).getId(), BusListActivity.this);
+                        Intent intent = new Intent(BusListActivity.this, BusDetailActivity.class);
+                        intent.putExtra("lineName", lineName);
+                        intent.putExtra("busId", busList.get(arg2).getId());
+                        startActivity(intent);
                     }
                 });
             }

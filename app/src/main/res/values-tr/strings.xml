@@ -6,5 +6,7 @@
     <string name="title_activity_bus_list">Otobüsler</string>
     <string name="loading_text_title"></string>
     <string name="loading_text_content">Yükleniyor...</string>
+    <string name="title_activity_bus_detail">Otobüs</string>
+    <string name="distance">Uzaklık</string>
 
 </resources>
