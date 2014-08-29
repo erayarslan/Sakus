@@ -39,6 +39,8 @@ public class LineListActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_line_list);
 
+        Utils.startBugSense(this);
+
         lineListView = (ListView) findViewById(R.id.listLines);
         progressDialog = Utils.getProgress(this);
 

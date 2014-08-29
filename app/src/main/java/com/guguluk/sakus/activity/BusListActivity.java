@@ -36,6 +36,8 @@ public class BusListActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bus_list);
 
+        Utils.startBugSense(this);
+
         busListView = (ListView) findViewById(R.id.busLines);
         progressDialog = Utils.getProgress(this);
 

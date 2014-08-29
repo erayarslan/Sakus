@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.guguluk.sakus.R;
+import com.guguluk.sakus.util.Utils;
 
 public class BusDetailActivity extends ActionBarActivity {
 
@@ -20,6 +21,8 @@ public class BusDetailActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bus_detail);
+
+        Utils.startBugSense(this);
 
         txtDistance = (TextView) findViewById(R.id.txtDistance);
 

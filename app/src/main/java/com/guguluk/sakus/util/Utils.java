@@ -9,6 +9,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.guguluk.sakus.R;
 
 import java.util.List;
@@ -48,4 +49,9 @@ public class Utils {
                 activity.getString(R.string.loading_text_title),
                 activity.getString(R.string.loading_text_content), true);
     }
+
+    public static void startBugSense(Activity activity) {
+        BugSenseHandler.initAndStartSession(activity, activity.getString(R.string.bugSense));
+    }
+
 }
