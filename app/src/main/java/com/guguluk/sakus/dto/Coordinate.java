@@ -4,19 +4,19 @@ package com.guguluk.sakus.dto;
 import java.util.List;
 
 public class Coordinate{
-   	private String latitude;
-   	private String longitude;
+   	private Double latitude;
+   	private Double longitude;
 
- 	public String getLatitude(){
+ 	public Double getLatitude(){
 		return this.latitude;
 	}
-	public void setLatitude(String latitude){
+	public void setLatitude(Double latitude){
 		this.latitude = latitude;
 	}
- 	public String getLongitude(){
+ 	public Double getLongitude(){
 		return this.longitude;
 	}
-	public void setLongitude(String longitude){
+	public void setLongitude(Double longitude){
 		this.longitude = longitude;
 	}
 }
