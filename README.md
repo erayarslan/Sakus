@@ -1,6 +1,6 @@
-![Logo](http://s23.postimg.org/8foxu2dhj/ic_launcher.png)
+![Logo](http://s23.postimg.org/8foxu2dhj/ic_launcher.png) [![Market](http://developer.android.com/images/brand/en_app_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=com.guguluk.sakus)
 
-# Sakus [![isPresident](http://img.shields.io/badge/developMode-true-green.svg)](http://8cook.in)
+# Sakus [![developMode](http://img.shields.io/badge/developMode-true-green.svg)](http://8cook.in)
 
 Sakarya :bus: Trace and Locate Application
 
