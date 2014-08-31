@@ -2,23 +2,31 @@ package com.guguluk.sakus.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.hardware.SensorManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.guguluk.sakus.R;
 import com.guguluk.sakus.dto.Bus;
 import com.guguluk.sakus.dto.Coordinate;
 import com.guguluk.sakus.resource.BusResource;
 import com.guguluk.sakus.util.Utils;
+import com.squareup.seismic.ShakeDetector;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class BusDetailActivity extends ActionBarActivity {
+public class BusDetailActivity extends ActionBarActivity implements ShakeDetector.Listener {
 
     private BusResource busResource = new BusResource();
 
@@ -28,10 +36,17 @@ public class BusDetailActivity extends ActionBarActivity {
     private TextView txtDistance;
 
     private ProgressDialog progressDialog;
+    private GoogleMap map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        ShakeDetector sd = new ShakeDetector(this);
+        sd.start(sensorManager);
+
+
         setContentView(R.layout.activity_bus_detail);
 
         Utils.startBugSense(this);
@@ -67,6 +82,22 @@ public class BusDetailActivity extends ActionBarActivity {
                 if(myLocation!=null && busLocation!=null) {
                     Float distance = Utils.distanceTwoCoordinate(myLocation,busLocation);
                     txtDistance.setText(distance.toString());
+
+                    if (map == null) {
+                        map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment)).getMap();
+                        if (map != null) {
+                            LatLng latLng = new LatLng(
+                                    bus.getCoordinate().getLatitude(),
+                                    bus.getCoordinate().getLongitude()
+                            );
+                            map.addMarker(new MarkerOptions().position(latLng).title(
+                                    getString(R.string.title_activity_bus_detail)
+                            ));
+                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
+                            map.setMyLocationEnabled(true);
+                            map.getUiSettings().setMyLocationButtonEnabled(false);
+                        }
+                    }
                 } else {
                     txtDistance.setText(":/");
                 }
@@ -91,5 +122,10 @@ public class BusDetailActivity extends ActionBarActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void hearShake() {
+        Toast.makeText(this, "Don't shake me, bro!", Toast.LENGTH_SHORT).show();
     }
 }
