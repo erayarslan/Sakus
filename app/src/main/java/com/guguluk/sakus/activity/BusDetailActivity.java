@@ -90,16 +90,18 @@ public class BusDetailActivity extends ActionBarActivity implements ShakeDetecto
                                     bus.getCoordinate().getLatitude(),
                                     bus.getCoordinate().getLongitude()
                             );
-                            map.addMarker(new MarkerOptions().position(latLng).title(
-                                    getString(R.string.title_activity_bus_detail)
-                            ));
+                            MarkerOptions markerOptions = new MarkerOptions();
+                            markerOptions.visible(true);
+                            markerOptions.position(latLng);
+                            markerOptions.title(lineName);
+                            map.addMarker(markerOptions);
                             map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
                             map.setMyLocationEnabled(true);
                             map.getUiSettings().setMyLocationButtonEnabled(false);
                         }
                     }
                 } else {
-                    txtDistance.setText(":/");
+                    txtDistance.setText(R.string.distance_error);
                 }
             }
         });
@@ -126,6 +128,6 @@ public class BusDetailActivity extends ActionBarActivity implements ShakeDetecto
 
     @Override
     public void hearShake() {
-        Toast.makeText(this, "Don't shake me, bro!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.shake_message, Toast.LENGTH_SHORT).show();
     }
 }

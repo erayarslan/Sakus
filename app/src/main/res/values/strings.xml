@@ -11,5 +11,7 @@
     <string name="distance">Distance</string>
     <string name="bugSense">ade242b2</string>
     <string name="location_not_found">Location Not Found</string>
+    <string name="shake_message">Don\'t shake me, bro!</string>
+    <string name="distance_error">:/</string>
 
 </resources>
