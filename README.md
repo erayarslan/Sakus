@@ -1,12 +1,12 @@
 ![Logo](http://s23.postimg.org/8foxu2dhj/ic_launcher.png) [![Market](http://developer.android.com/images/brand/en_app_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=com.guguluk.sakus)
 
-# Sakus [![developMode](http://img.shields.io/badge/developMode-true-green.svg)](http://8cook.in)
+# Sakus [![developMode](http://img.shields.io/badge/developMode-false-red.svg)](http://8cook.in) [![projectStatus](http://img.shields.io/badge/projectStatus-stoped-red.svg)](http://8cook.in)
 
 Sakarya :bus: Trace and Locate Application
 
 ## API
 
-### `sapi`
+### [sapi-php](https://github.com/8cookin/sapi-php)
 
 ## Contributing
 
