@@ -13,5 +13,8 @@
     <string name="location_not_found">Location Not Found</string>
     <string name="shake_message">Don\'t shake me, bro!</string>
     <string name="distance_error">:/</string>
+    <string name="you">You</string>
+    <string name="error">Error</string>
+    <string name="refresh_interval">10000</string>
 
 </resources>

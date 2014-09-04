@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -32,29 +33,29 @@ public class LineListActivity extends ActionBarActivity {
 
     private CityResource cityResource = new CityResource();
     private ListView lineListView;
-    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.activity_line_list);
 
         Utils.startBugSense(this);
 
         lineListView = (ListView) findViewById(R.id.listLines);
-        progressDialog = Utils.getProgress(this);
+        setSupportProgressBarIndeterminateVisibility(Boolean.TRUE);
 
         cityResource.getCity(new Callback() {
             @Override
             public void failure(RetrofitError arg0) {
-                progressDialog.dismiss();
+                setSupportProgressBarIndeterminateVisibility(Boolean.FALSE);
                 //
                 Utils.showMessage("Error", arg0.getMessage(), LineListActivity.this);
             }
 
             @Override
             public void success(Object arg0, Response arg1) {
-                progressDialog.dismiss();
+                setSupportProgressBarIndeterminateVisibility(Boolean.FALSE);
                 //
                 final City city = (City) arg0;
                 final List<Line> lineList = city.getLineList();

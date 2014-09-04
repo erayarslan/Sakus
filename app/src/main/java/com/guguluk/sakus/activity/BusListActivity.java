@@ -1,12 +1,12 @@
 package com.guguluk.sakus.activity;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -27,33 +27,33 @@ public class BusListActivity extends ActionBarActivity {
 
     private LineResource lineResource = new LineResource();
     private ListView busListView;
-    private ProgressDialog progressDialog;
 
     private String lineName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.activity_bus_list);
 
         Utils.startBugSense(this);
 
         busListView = (ListView) findViewById(R.id.busLines);
-        progressDialog = Utils.getProgress(this);
+        setSupportProgressBarIndeterminateVisibility(Boolean.TRUE);
 
         lineName = getIntent().getExtras().getString("lineName");
 
         lineResource.getLine(lineName,new Callback() {
             @Override
             public void failure(RetrofitError arg0) {
-                progressDialog.dismiss();
+                setSupportProgressBarIndeterminateVisibility(Boolean.FALSE);
                 //
-                Utils.showMessage("Error", arg0.getMessage(), BusListActivity.this);
+                Utils.showMessage(getString(R.string.error), arg0.getMessage(), BusListActivity.this);
             }
 
             @Override
             public void success(Object arg0, Response arg1) {
-                progressDialog.dismiss();
+                setSupportProgressBarIndeterminateVisibility(Boolean.FALSE);
                 //
                 final Line line = (Line) arg0;
                 final List<Bus> busList = line.getBusList();
