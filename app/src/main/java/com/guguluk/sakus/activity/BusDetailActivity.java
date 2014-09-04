@@ -1,6 +1,7 @@
 package com.guguluk.sakus.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
@@ -16,7 +17,10 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.guguluk.sakus.R;
 import com.guguluk.sakus.dto.Bus;
 import com.guguluk.sakus.dto.Coordinate;
@@ -43,6 +47,8 @@ public class BusDetailActivity extends ActionBarActivity implements ShakeDetecto
     //
     private TextView txtDistance;
     private GoogleMap map;
+    //
+    List<Marker> markerList = new ArrayList<Marker>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +65,19 @@ public class BusDetailActivity extends ActionBarActivity implements ShakeDetecto
         map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment)).getMap();
         //
         lineName = getIntent().getExtras().getString("lineName");
+        //
+        String[] coors = Utils.getRoute(lineName).split(" ");
+        PolylineOptions polylineOptions = new PolylineOptions();
+        polylineOptions.width(5);
+        polylineOptions.color(Color.RED);
+        polylineOptions.geodesic(true);
+        for(int i=0;i<coors.length;i++) {
+            String[] coor = coors[i].split(",");
+            polylineOptions.add(new LatLng(Double.parseDouble(coor[1]),Double.parseDouble(coor[0])));
+        }
+        map.addPolyline(polylineOptions);
+        //
+        setTitle(lineName);
         //
         customHandler.postDelayed(refreshMap, 0);
     }
@@ -112,10 +131,14 @@ public class BusDetailActivity extends ActionBarActivity implements ShakeDetecto
         yourMarker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
         yourMarker.title(getString(R.string.you));
         //
-        map.clear();
+        for (Marker marker : markerList) {
+            marker.remove();
+        }
+        //
         map.addMarker(yourMarker);
         for(MarkerOptions markerOptions : markerOptionsList) {
-            map.addMarker(markerOptions);
+            Marker marker = map.addMarker(markerOptions);
+            markerList.add(marker);
         }
         //
         if(firstTry) {
