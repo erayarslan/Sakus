@@ -20,9 +20,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.guguluk.sakus.R;
 import com.guguluk.sakus.dto.Bus;
 import com.guguluk.sakus.dto.Coordinate;
+import com.guguluk.sakus.dto.Line;
 import com.guguluk.sakus.resource.BusResource;
+import com.guguluk.sakus.resource.LineResource;
 import com.guguluk.sakus.util.Utils;
 import com.squareup.seismic.ShakeDetector;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -31,10 +36,9 @@ import retrofit.client.Response;
 public class BusDetailActivity extends ActionBarActivity implements ShakeDetector.Listener {
 
     private String lineName;
-    private String busId;
     private boolean firstTry = true;
     //
-    private BusResource busResource = new BusResource();
+    private LineResource lineResource = new LineResource();
     private Handler customHandler = new Handler();
     //
     private TextView txtDistance;
@@ -55,7 +59,6 @@ public class BusDetailActivity extends ActionBarActivity implements ShakeDetecto
         map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment)).getMap();
         //
         lineName = getIntent().getExtras().getString("lineName");
-        busId = getIntent().getExtras().getString("busId");
         //
         customHandler.postDelayed(refreshMap, 0);
     }
@@ -70,7 +73,7 @@ public class BusDetailActivity extends ActionBarActivity implements ShakeDetecto
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            Intent intent = new Intent(BusDetailActivity.this, BusListActivity.class);
+            Intent intent = new Intent(BusDetailActivity.this, LineListActivity.class);
             intent.putExtra("lineName", lineName);
             startActivity(intent);
             return true;
@@ -90,15 +93,19 @@ public class BusDetailActivity extends ActionBarActivity implements ShakeDetecto
         }
     };
 
-    private void setMapMarker(Coordinate yourCoordinate, Coordinate busCoordinate) {
+    private void setMapMarker(Coordinate yourCoordinate, List<Coordinate> coordinates) {
         LatLng yourLatLng = new LatLng(yourCoordinate.getLatitude(),yourCoordinate.getLongitude());
-        LatLng busLatLng = new LatLng(busCoordinate.getLatitude(),busCoordinate.getLongitude());
         //
-        MarkerOptions busMarker = new MarkerOptions();
-        busMarker.visible(true);
-        busMarker.position(busLatLng);
-        busMarker.title(lineName);
+        List<MarkerOptions> markerOptionsList = new ArrayList<MarkerOptions>();
         //
+        for (Coordinate coordinate : coordinates) {
+            LatLng latLng = new LatLng(coordinate.getLatitude(), coordinate.getLongitude());
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.visible(true);
+            markerOptions.position(latLng);
+            markerOptions.title(getString(R.string.title_activity_bus_detail));
+            markerOptionsList.add(markerOptions);
+        }
         MarkerOptions yourMarker = new MarkerOptions();
         yourMarker.visible(true);
         yourMarker.position(yourLatLng);
@@ -106,28 +113,42 @@ public class BusDetailActivity extends ActionBarActivity implements ShakeDetecto
         yourMarker.title(getString(R.string.you));
         //
         map.clear();
-        map.addMarker(busMarker);
         map.addMarker(yourMarker);
+        for(MarkerOptions markerOptions : markerOptionsList) {
+            map.addMarker(markerOptions);
+        }
         //
         if(firstTry) {
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(busLatLng, 14));
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(yourLatLng, 14));
         }
         if(firstTry) { firstTry = false; }
     }
 
-    private void handleBus(Bus bus) {
+    private void handleLine(Line line) {
+        Float minDistance;
         Coordinate myLocation = null;
-        Coordinate busLocation = bus.getCoordinate();
+        List<Bus> buses = line.getBusList();
+        List<Coordinate> coordinates = new ArrayList<Coordinate>();
+        for (Bus bus : buses) {
+            coordinates.add(bus.getCoordinate());
+        }
+
         try {
             myLocation = Utils.getLocation(BusDetailActivity.this);
         } catch (Exception e) {
             Utils.showMessage(getString(R.string.error), e.getMessage(), BusDetailActivity.this);
         }
 
-        if(myLocation!=null && busLocation!=null) {
-            Float distance = Utils.distanceTwoCoordinate(myLocation,busLocation);
-            txtDistance.setText(distance.toString());
-            setMapMarker(myLocation,bus.getCoordinate());
+        if(myLocation!=null && coordinates.size()!=0) {
+            minDistance = Utils.distanceTwoCoordinate(myLocation,coordinates.get(0));
+            for (Coordinate coordinate : coordinates) {
+                Float targetDistance = Utils.distanceTwoCoordinate(myLocation,coordinate);
+                if(minDistance > targetDistance) {
+                    minDistance = targetDistance;
+                }
+            }
+            txtDistance.setText(minDistance.toString());
+            setMapMarker(myLocation,coordinates);
         } else {
             txtDistance.setText(R.string.distance_error);
         }
@@ -136,7 +157,7 @@ public class BusDetailActivity extends ActionBarActivity implements ShakeDetecto
     private void fetchBusDetail() {
         setSupportProgressBarIndeterminateVisibility(Boolean.TRUE);
         //
-        busResource.getBus(lineName, busId, new Callback() {
+        lineResource.getLine(lineName, new Callback() {
             @Override
             public void failure(RetrofitError arg0) {
                 setSupportProgressBarIndeterminateVisibility(Boolean.FALSE);
@@ -148,7 +169,7 @@ public class BusDetailActivity extends ActionBarActivity implements ShakeDetecto
             public void success(Object arg0, Response arg1) {
                 setSupportProgressBarIndeterminateVisibility(Boolean.FALSE);
                 //
-                handleBus((Bus) arg0);
+                handleLine((Line) arg0);
             }
         });
     };
