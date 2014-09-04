@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.StrictMode;
 
 import com.bugsense.trace.BugSenseHandler;
 import com.guguluk.sakus.R;
@@ -95,7 +96,11 @@ public class Utils {
         return (float) (dist * meterConversion);
     }
 
-    public static String getRoute(String lineName) {
+    public static String getRoute(String lineName) throws Exception {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+        StrictMode.setThreadPolicy(policy);
+
         try {
             String url = "http://sakus.sakarya.bel.tr/Proxy/proxy.ashx?url=http%3A%2F%2Flocalhost%3A8080%2Fgeoserver%2Fwfs";
             URL obj = null;
@@ -145,7 +150,7 @@ public class Utils {
             Document xmlDocument = builder.parse(new ByteArrayInputStream(bas.toString().getBytes()));
             return xmlDocument.getElementsByTagName("gml:coordinates").item(0).getTextContent();
         } catch (Exception ex) {
-            return null;
+            throw ex;
         }
     }
 

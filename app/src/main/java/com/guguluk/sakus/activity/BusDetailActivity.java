@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -19,20 +18,16 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.guguluk.sakus.R;
 import com.guguluk.sakus.dto.Bus;
 import com.guguluk.sakus.dto.Coordinate;
 import com.guguluk.sakus.dto.Line;
-import com.guguluk.sakus.resource.BusResource;
 import com.guguluk.sakus.resource.LineResource;
 import com.guguluk.sakus.util.Utils;
 import com.squareup.seismic.ShakeDetector;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -66,7 +61,14 @@ public class BusDetailActivity extends ActionBarActivity implements ShakeDetecto
         //
         lineName = getIntent().getExtras().getString("lineName");
         //
-        String[] coors = Utils.getRoute(lineName).split(" ");
+        setSupportProgressBarIndeterminateVisibility(Boolean.TRUE);
+        //
+        String[] coors = new String[0];
+        try {
+            coors = Utils.getRoute(lineName).split(" ");
+        } catch (Exception e) {
+            Utils.showMessage(getString(R.string.error), e.getMessage(), BusDetailActivity.this);
+        }
         PolylineOptions polylineOptions = new PolylineOptions();
         polylineOptions.width(5);
         polylineOptions.color(Color.RED);
@@ -178,8 +180,6 @@ public class BusDetailActivity extends ActionBarActivity implements ShakeDetecto
     }
 
     private void fetchBusDetail() {
-        setSupportProgressBarIndeterminateVisibility(Boolean.TRUE);
-        //
         lineResource.getLine(lineName, new Callback() {
             @Override
             public void failure(RetrofitError arg0) {
